@@ -2,7 +2,7 @@
 
 Create an app whereby a user can enter their mood every day, and the program will diagnose any mood disorders detected over the course of the last week (7 days).
 
-_Please note that this application is for educational and fun purposes only. It is intentionally simple, and does not attempt to accurately diagnose mood disorders._
+_Please note that this application is for educational and fun purposes only. It is intentionally simplistic, and does not attempt to accurately diagnose moods or psychiatric conditions._
 
 ## Requirements
 
