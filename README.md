@@ -37,7 +37,8 @@ The first time the program is run each day, after gathering the mood from the us
 1. if the user has been happy for 5 or more days out of the last 7 days, the user should be diagnosed as `manic`
 1. if the user has been sad for 4 or more days out of the last 7, the user should be diagnosed as `depressive`
 1. if the user has been apathetic for 6 or more days out of the last 7, the user should be diagnosed as `schizoid`
-1. if none of the above apply, then simply output the user's average mood over the last six days
+1. if none of the above apply, the user should be diagnosed with their average mood over the last 7 days
+1. print out the user's diagnosis, following the format, "`Your diagnosis: schizoid!`"
 
 ## Clone this repository
 
