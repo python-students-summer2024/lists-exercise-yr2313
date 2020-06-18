@@ -33,11 +33,11 @@ The first time the program is run each day, after gathering the mood from the us
 1. check whether there are at least 7 entries in the `mood_diary.txt` file.
 1. if not, do nothing further.
 1. if so, retrieve the most recent 7 entries from the `mood_diary.txt` text file (i.e. the last 7 lines)
-1. calculate the average mood from those entries (take the rounded numeric average of the 7 entries, and convert that to the appropriate string representing a mood.)
+1. calculate the average mood from those entries (take the rounded numeric average of the 7 entries, and convert that to the appropriate string representing their average mood.)
 1. if the user has been happy for 5 or more days out of the last 7 days, the user should be diagnosed as `manic`
 1. if the user has been sad for 4 or more days out of the last 7, the user should be diagnosed as `depressive`
 1. if the user has been apathetic for 6 or more days out of the last 7, the user should be diagnosed as `schizoid`
-1. if none of the above apply, then simply output the user's average (or most frequent) mood over the last six days
+1. if none of the above apply, then simply output the user's average mood over the last six days
 
 ## Clone this repository
 
