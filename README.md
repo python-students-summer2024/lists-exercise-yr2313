@@ -24,7 +24,18 @@ Every day the program is run, it should do the following once:
 
 If the user has already entered a valid mood on any given day, and the user attempts to run the program again on that same day, the program must simply print, "Sorry, you have already entered your mood today." and quit.
 
-You are free to do this any way you wish. You may find the `datetime` module useful in determining the current date.
+Use the `datetime` module's `date.today()` function to determine the current date. For example:
+
+```python
+import datetime
+date_today = datetime.date.today() # get the date today as a date object
+date_today = str(date_today) # convert it to a string
+```
+
+Your program **must** call this function once or twice when it runs:
+
+1. Call it while checking whether the user has already entered a mood today.
+1. If the user has not already entered a mood today, you **must** call this function a second time while storing the user's mood today, along with today's date, to a file. Don't just reuse the date you got when calling this functino the first time, since the user might have left the program running for more than a day.
 
 ### Diagnosing disorders
 
