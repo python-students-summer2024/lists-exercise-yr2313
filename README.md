@@ -78,3 +78,13 @@ You must create three files:
 - `mood_assessor.py` - this file must include a function named `assess_mood()` that takes no arguments and outputs the user's mood, based on the data found in the file named `mood_diary.txt`.
 - `main.py` - this file must call the `assess_mood()` function defined in the file named `mood_assessor.py`.
 - `data` / `mood_diary.txt` - this file must be automatically created by your program. It will store the user's mood entries.
+
+## Debugging
+
+### Verify the output is correct
+
+One of the easiest ways to debug a program simply to verify that it behaves correctly when you run it. Try running it with a variety of valid and invaalid inputs to be sure it behaves according to instructions under all circumstances.
+
+### Verify that the tests pass
+
+Pytest-based tests are included in the `tests` directory that will help you determine whether each function is operating as expected. If the functions have been completed correctly, all tests should pass. You should not edit any files in the `test` directory.
