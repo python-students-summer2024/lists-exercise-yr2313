@@ -1,6 +1,7 @@
 import pytest
 import datetime
 import os
+from pathlib import Path
 import logging
 from freezegun import freeze_time
 from mood_assessor import assess_mood
@@ -9,8 +10,9 @@ class Tests:
 
   @pytest.fixture(scope="function")
   def data_clean(self):
-    print("setup")
-    f = open('data/mood_diary.txt', 'w')
+    # print("setup")
+    file_to_open = Path("data/mood_diary.txt")
+    f = open(file_to_open, 'w')
     f.write('')
     f.close()
 
