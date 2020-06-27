@@ -1,6 +1,8 @@
 import pytest
-import os
 import datetime
+import os
+import logging
+from freezegun import freeze_time
 from mood_assessor import assess_mood
 
 class Tests:
@@ -12,24 +14,12 @@ class Tests:
     f.write('')
     f.close()
 
-  def mock_datetime(self, mock_data, call_counter, monkeypatch):
-    """
-    Mock the datetime module's today function
-    :param mock_data: Dictionary of data to mock.
-    :param call_counter: Dictionary of counters for function calls
-    :param monkeypatch: pytest's monkeypatch object
-    """
-    class MockDatetime:
-      class date:
-        def __init(self, year, month, day):
-          return old_datetime.date(year, month, day)
-        @classmethod
-        def today(cls):
-          call_counter['today'] += 1
-          return mock_data['today'].pop(0)
-    old_datetime = datetime # keep a backup of the original
-    monkeypatch.setattr(datetime, 'date', MockDatetime.date)
-    
+  @pytest.fixture(scope="class")
+  def logger(self):
+    # set up debug logging
+    log = logging.getLogger('test_mood_assessment')
+    return log
+
   def mock_input(self, mock_data, call_counter, monkeypatch):
     """
     Mock the builtin input function
@@ -43,13 +33,12 @@ class Tests:
       return mock_data['input'].pop(0)
     monkeypatch.setattr('builtins.input', lambda x: new_input(x))
     
-  def test_same_date(self, monkeypatch, data_clean):
+  def test_same_date(self, monkeypatch, data_clean, logger):
     """
     Does the program ask for a mood input only once when run multiple times on the same day?
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 2
@@ -68,31 +57,36 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # make sure the program only asked for input once
     assert call_counter['input'] == 1
     # datetime = old_datetime # restore it
 
-  def test_different_dates(self, monkeypatch, data_clean):
+  def test_different_dates(self, monkeypatch, data_clean, logger):
     """
-    Does the program allow the user to enter moods on two different days?
+    Does the program allow the user to enter moods on different days?
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
 
     # number of days for mock data
     num_days = 3
 
-    # date for mocking
+    # mock the dates
+    # date to use when checking whether user has entered a mood today
     date_today = datetime.date(2020, 6, 18)
-    # generate different test dates
+    # dates to enter into the file when new mood entry created
     dates = []
     for i in range(1, num_days + 1):
       test_date = datetime.date(2020, 1, i)
@@ -106,27 +100,35 @@ class Tests:
       'input': 0,
       'today': 0
     }
+
+    # make sure mock dates are correct
+    # logger.warning(mock_data)
+
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # make sure the program only asked for input once
     assert call_counter['input'] == 3
 
-  def test_depressive(self, monkeypatch, capsys, data_clean):
+  def test_depressive(self, monkeypatch, capsys, data_clean, logger):
     """
     Does the program diagnose depression correctly if there are 4 or more sads within the last 7 days
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param capsys: pytest's capsys output capture fixture, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 7
@@ -150,12 +152,17 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # check the output for the correct diagnosis
     captured = capsys.readouterr()  # capture print output
@@ -168,14 +175,13 @@ class Tests:
       # other diagnoses should not be in any output line
       assert d not in actual
 
-  def test_manic(self, monkeypatch, capsys, data_clean):
+  def test_manic(self, monkeypatch, capsys, data_clean, logger):
     """
     Does the program diagnose mania correctly if there are 5 happies within the last 7 days
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param capsys: pytest's capsys output capture fixture, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 7
@@ -199,12 +205,17 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # check the output for the correct diagnosis
     captured = capsys.readouterr()  # capture print output
@@ -217,14 +228,13 @@ class Tests:
       # other diagnoses should not be in any output line
       assert d not in actual
 
-  def test_schizoid(self, monkeypatch, capsys, data_clean):
+  def test_schizoid(self, monkeypatch, capsys, data_clean, logger):
     """
     Does the program diagnose schizoid disorder correctly if there are 6 apathetics within the last 7 days
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param capsys: pytest's capsys output capture fixture, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 7
@@ -248,12 +258,17 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # check the output for the correct diagnosis
     captured = capsys.readouterr()  # capture print output
@@ -266,14 +281,13 @@ class Tests:
       # other diagnoses should not be in any output line
       assert d not in actual
 
-  def test_average_mood(self, monkeypatch, capsys, data_clean):
+  def test_average_mood(self, monkeypatch, capsys, data_clean, logger):
     """
     Does the program outputs the average mood if no other disorder found.
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param capsys: pytest's capsys output capture fixture, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 7
@@ -297,12 +311,17 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on the different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # check the output for the correct diagnosis
     captured = capsys.readouterr()  # capture print output
@@ -315,14 +334,13 @@ class Tests:
       # other diagnoses should not be in any output line
       assert d not in actual
 
-  def test_analyze_only_last_week(self, monkeypatch, capsys, data_clean):
+  def test_analyze_only_last_week(self, monkeypatch, capsys, data_clean, logger):
     """
     Does the program really only look at the past week's worth of moods?
     :param monkeypatch: pytest's monkeypatch object, automatically supplied.
     :param capsys: pytest's capsys output capture fixture, automatically supplied.
     :param data_clean: the pytest fixture to wipe out the data file, defined in this class.
     """
-    global datetime
     
     # number of days for mock data
     num_days = 8
@@ -346,12 +364,17 @@ class Tests:
     # mock the input function
     self.mock_input(mock_data, call_counter, monkeypatch)
 
-    # mock the datetime module's today function
-    self.mock_datetime(mock_data, call_counter, monkeypatch)
+    # freeze the time    
+    with freeze_time(mock_data['today'][0]) as frozen_time:
 
-    # run the program on different days
-    for i in range(num_days):
-      assess_mood()
+      # run the program on the different days
+      for i in range(num_days):
+        # set the date today to the next mock date
+        # logger.warning(str(mock_data['today'][i*2]) +':'+str(mock_data['today'][i*2+1]))
+        frozen_time.move_to(mock_data['today'][i*2]) # move to next mock date
+
+        # call the target function
+        assess_mood()
 
     # check the output for the correct diagnosis
     captured = capsys.readouterr()  # capture print output

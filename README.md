@@ -35,7 +35,7 @@ date_today = str(date_today) # convert it to a string
 Your program **must** call this function once or twice when it runs:
 
 1. Call it while checking whether the user has already entered a mood today.
-1. If the user has not already entered a mood today, you **must** call this function a second time while storing the user's mood today, along with today's date, to a file. Don't just reuse the date you got when calling this functino the first time, since the user might have left the program running for more than a day.
+1. If the user has not already entered a mood today, you **must** call this function a second time while storing the user's mood today, along with today's date, to a file. Don't just reuse the date you got when calling this function the first time, since the user might have left the program running for more than a day.
 
 ### Diagnosing disorders
 
@@ -78,13 +78,3 @@ You must create three files:
 - `mood_assessor.py` - this file must include a function named `assess_mood()` that takes no arguments and outputs the user's mood, based on the data found in the file named `mood_diary.txt`.
 - `main.py` - this file must call the `assess_mood()` function defined in the file named `mood_assessor.py`.
 - `data` / `mood_diary.txt` - this file must be automatically created by your program. It will store the user's mood entries.
-
-## Debugging
-
-### Verify the output is correct
-
-One of the easiest ways to debug a program simply to verify that it behaves correctly when you run it. Try running it with a variety of valid and invaalid inputs to be sure it behaves according to instructions under all circumstances.
-
-### Verify that the tests pass
-
-Pytest-based tests are included in the `tests` directory that will help you determine whether each function is operating as expected. If the functions have been completed correctly, all tests should pass. You should not edit any files in the `test` directory.
