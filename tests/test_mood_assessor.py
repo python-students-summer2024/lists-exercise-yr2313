@@ -8,10 +8,21 @@ from mood_assessor import assess_mood
 
 class Tests:
 
+  def create_data_file_if_not_exists(self, filepath):
+    # if the directory does not exist, create it.
+    if not filepath.parent.exists():
+      filepath.parent.mkdir()
+
+    # if the file does not exist, create it.
+    if not filepath.is_file():
+      f = open(filepath, 'w')
+      f.close()
+
   @pytest.fixture(scope="function")
   def data_clean(self):
     # print("setup")
     file_to_open = Path("data/mood_diary.txt")
+    self.create_data_file_if_not_exists(file_to_open)
     f = open(file_to_open, 'w')
     f.write('')
     f.close()
