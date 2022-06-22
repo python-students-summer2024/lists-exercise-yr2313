@@ -78,3 +78,11 @@ You must create three files:
 - `mood_assessor.py` - this file must include a function named `assess_mood()` that takes no arguments and outputs the user's mood, based on the data found in the file named `mood_diary.txt`.
 - `main.py` - this file must call the `assess_mood()` function defined in the file named `mood_assessor.py`.
 - `data` / `mood_diary.txt` - this file must be automatically created by your program. It will store the user's mood entries.
+
+## Testing your work
+
+Included in the given code are some tests, using the **pytest** testing framework. These tests should all pass if the code in each function is done correctly.
+
+If the tests do not appear, or seem to never stop loading, open up a Terminal window and run the command, `pytest --collect-only`, to see whether there are any errors in the code that prevent the tests from being discovered. If there are no errors reported from that command, try running the tests directly from the Terminal with the command, `pytest`.
+
+If an errors says the `freezegun` module is not installed, try running the command `pip install freezegun` or `pip3 install freezegun` and then try again.
