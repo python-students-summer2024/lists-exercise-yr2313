@@ -79,7 +79,7 @@ You must create three files:
 - `main.py` - this file must call the `assess_mood()` function defined in the file named `mood_assessor.py`.
 - `data` / `mood_diary.txt` - this file must be automatically created by your program. It will store the user's mood entries.
 
-### Verify your program runs correctly
+## Verify your program runs correctly
 
 Make sure that your program behaves as expected when you run it. Review the requirements and compare your work to them. Any requests for user input or printed output should match exactly the samples given in the instructions. Pay attention to details, such as the number of spaces, the number of newlines, the use of punctuation, etc.
 
