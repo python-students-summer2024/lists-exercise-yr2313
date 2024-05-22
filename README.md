@@ -90,3 +90,12 @@ Included in the given code are some tests, using the **pytest** testing framewor
 If the tests do not appear, or seem to never stop loading, open up a Terminal window and run the command, `pytest --collect-only`, to see whether there are any errors in the code that prevent the tests from being discovered. If there are no errors reported from that command, try running the tests directly from the Terminal with the command, `pytest`.
 
 If an errors says the `freezegun` module is not installed, try running the command `pip install freezegun` or `pip3 install freezegun` and then try again.
+
+## Submit your work
+
+Each student must submit this assignment individually. Use Visual Studio Code to perform git `stage`, `commit` and `push` actions to submit. These actions are all available as menu items in Visual Studio Code's Source Control panel.
+
+1. Type a short note about what you have done to the files in the `Message` area, and then type `Command-Enter` (Mac) or `Control-Enter` (Windows) to perform git `stage` and `commit` actions.
+1. Click the `...` icon next to the words, "Source Control" and select "Push" to perform the git `push` action. This will upload your work to your repository on GitHub.com.
+
+![Pushing work in Visual Studio Code](./images/vscode_stage_commit_push.png)
